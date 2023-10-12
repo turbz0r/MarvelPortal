@@ -1,6 +1,7 @@
 class MarvelService {
     _apiBase = 'https://gateway.marvel.com:443/v1/public/';
     _apiKey = 'apikey=6a2d2aeaa98f89329c989915e355dcb5';
+    _apiKey2 = 'apikey=79cae34e03476628147b9cbd9670c345';
 
     getResource = async (url) => {
         let res = await fetch(url);
@@ -13,19 +14,25 @@ class MarvelService {
     };
 
     getAllCharacters = async () => {
-        const res = await this.getResource(`${this._apiBase}characters?limit=9&offset=150&${this._apiKey}`);
+        const res = await this.getResource(`${this._apiBase}characters?limit=9&offset=150&${this._apiKey2}`);
         return res.data.results.map(this._transformCharacter);
     };
     getCharacter = async (id) => {
-        let res = await this.getResource(`${this._apiBase}characters/${id}?${this._apiKey}`);
+        let res = await this.getResource(`${this._apiBase}characters/${id}?${this._apiKey2}`);
         return this._transformCharacter(res.data.results[0]);
     };
 
     _transformCharacter = (character) => {
-        //TODO add check if description exists or if its to long and make output according to checking result
+        let charDesc;
+        if (character.description.length < 2) {
+            charDesc = 'Description unavailable.';
+        } else if (character.description.length > 35) {
+            charDesc = character.description.slice(0, 148) + '...';
+        }
+
         return {
             name: character.name,
-            description: character.description,
+            description: charDesc,
             thumbnail: `${character.thumbnail.path}.${character.thumbnail.extension}`,
             homepage: character.urls[0].url,
             wiki: character.urls[1].url,
