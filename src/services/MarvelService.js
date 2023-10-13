@@ -14,7 +14,7 @@ class MarvelService {
     };
 
     getAllCharacters = async () => {
-        const res = await this.getResource(`${this._apiBase}characters?limit=9&offset=150&${this._apiKey2}`);
+        const res = await this.getResource(`${this._apiBase}characters?limit=9&offset=400&${this._apiKey2}`);
         return res.data.results.map(this._transformCharacter);
     };
     getCharacter = async (id) => {
@@ -31,11 +31,13 @@ class MarvelService {
         }
 
         return {
+            id: character.id,
             name: character.name,
             description: charDesc,
             thumbnail: `${character.thumbnail.path}.${character.thumbnail.extension}`,
             homepage: character.urls[0].url,
             wiki: character.urls[1].url,
+            comics: character.comics.items.slice(0, 9),
         };
     };
 }
