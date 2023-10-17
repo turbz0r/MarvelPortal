@@ -15,6 +15,7 @@ class CharList extends Component {
         newItemsLoading: false,
         offset: 300,
         charEnded: false,
+        activeId: null,
     };
 
     marvelService = new MarvelService();
@@ -60,12 +61,18 @@ class CharList extends Component {
             if (thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg') {
                 imgStyle = { objectFit: 'contain' };
             }
+            let active = this.state.activeId === id;
+            let dynamicClass = active ? 'char__item char__item_selected' : 'char__item';
             return (
                 <li
-                    className="char__item"
+                    tabIndex="0"
+                    className={dynamicClass}
                     key={id}
-                    onClick={() => {
+                    onFocus={() => {
                         this.props.onCharSelected(id);
+                        this.setState({
+                            activeId: id,
+                        });
                     }}>
                     <img src={thumbnail} alt={name} style={imgStyle} />
                     <div className="char__name">{name}</div>
