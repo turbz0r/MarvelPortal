@@ -18,12 +18,17 @@ const useMarvelService = () => {
         return _transformCharacter(res.data.results[0]);
     };
 
+    const getCharacterByName = async (name) => {
+        const res = await request(`${_apiBase}characters?name=${name}&${_apiKey2}`);
+        return _transformCharacter(res.data.results[0]);
+    };
+
     const _transformCharacter = (character) => {
         let charDesc;
         if (character.description.length < 2) {
             charDesc = 'Description unavailable.';
         } else if (character.description.length > 35) {
-            charDesc = character.description.slice(0, 148) + '...';
+            charDesc = character.description.slice(0, 210) + '...';
         }
 
         return {
@@ -59,7 +64,7 @@ const useMarvelService = () => {
         };
     };
 
-    return { loading, error, getAllCharacters, getCharacter, clearError, getAllComics, getComic };
+    return { loading, error, getAllCharacters, getCharacter, clearError, getAllComics, getComic, getCharacterByName };
 };
 
 export default useMarvelService;

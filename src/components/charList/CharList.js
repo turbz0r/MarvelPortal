@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import PropTypes from 'prop-types';
 
 import useMarvelService from '../../services/MarvelService';
@@ -46,23 +47,26 @@ const CharList = (props) => {
         let active = activeId === id;
         let dynamicClass = active ? 'char__item char__item_selected' : 'char__item';
         return (
-            <li
-                tabIndex="0"
-                className={dynamicClass}
-                key={id}
-                onFocus={() => {
-                    props.onCharSelected(id);
-                    setActiveId(id);
-                }}>
-                <img src={thumbnail} alt={name} style={imgStyle} />
-                <div className="char__name">{name}</div>
-            </li>
+            <CSSTransition key={id} timeout={500} classNames={dynamicClass}>
+                <li
+                    tabIndex="0"
+                    className={dynamicClass}
+                    onFocus={() => {
+                        props.onCharSelected(id);
+                        setActiveId(id);
+                    }}>
+                    <img src={thumbnail} alt={name} style={imgStyle} />
+                    <div className="char__name">{name}</div>
+                </li>
+            </CSSTransition>
         );
     });
 
     return (
         <div className="char__list">
-            <ul className="char__grid">{output}</ul>
+            <ul className="char__grid">
+                <TransitionGroup component={null}>{output}</TransitionGroup>
+            </ul>
             <button
                 style={{ display: charEnded ? 'none' : 'block' }}
                 className="button button__main button__long"
