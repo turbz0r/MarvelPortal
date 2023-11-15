@@ -14,6 +14,7 @@ const CharSearchForm = () => {
 
     const onCharLoaded = (char) => {
         setChar(char);
+        console.log(char);
     };
 
     const updateChar = (name) => {
@@ -27,18 +28,16 @@ const CharSearchForm = () => {
             <ErrorMessage />
         </div>
     ) : null;
-    const results = !char ? null : (
+    const results = !char ? null : char.length > 0 ? (
         <div className="char__search-wrapper">
-            <div className="char__search-success">There is! Visit {char.name} page?</div>
-            <Link to={`/characters/${char.id}`} className="button button__secondary">
+            <div className="char__search-success">There is! Visit {char[0].name} page?</div>
+            <Link to={`/characters/${char[0].id}`} className="button button__secondary">
                 <div className="inner">To page</div>
             </Link>
         </div>
+    ) : (
+        <div className="char__search-error">The character was not found. Check the name and try again</div>
     );
-    // TODO if-else construction to show not found characters message
-    // ) : (
-    //     <div className="char__search-error">The character was not found. Check the name and try again</div>
-    // );
 
     return (
         <div className="char__search-form">

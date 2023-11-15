@@ -8,10 +8,11 @@ import ErrorMessage from '../errorMessage/errorMessage';
 
 const RandomChar = () => {
     const [char, setChar] = useState({});
-    const { loading, error, getCharacter, clearError } = useMarvelService();
+    const { loading, error, getCharacter, clearError, process, setProcess } = useMarvelService();
 
     useEffect(() => {
         getChar();
+
         const timerId = setInterval(getChar, 60000);
 
         return () => {
@@ -22,22 +23,35 @@ const RandomChar = () => {
     const getChar = () => {
         clearError();
         const id = Math.floor(Math.random() * (1011400 - 1011000) + 1011000);
-        getCharacter(id).then(onCharLoaded);
+        getCharacter(id)
+            .then(onCharLoaded)
+            .then(() => {
+                setProcess('confirmed');
+            });
     };
 
     const onCharLoaded = (char) => {
         setChar(char);
     };
 
-    const errorMessage = error ? <ErrorMessage /> : null;
-    const spinner = loading ? <Spinner /> : null;
-    const content = !(loading || error) ? <View char={char} /> : null;
+    const setContent = (process, char) => {
+        switch (process) {
+            case 'waiting':
+                return <Spinner />;
+            case 'loading':
+                return <Spinner />;
+            case 'confirmed':
+                return <View char={char} />;
+            case 'error':
+                return <ErrorMessage />;
+            default:
+                throw new Error('Unexpected error has occured.');
+        }
+    };
 
     return (
         <div className="randomchar">
-            {errorMessage}
-            {spinner}
-            {content}
+            {setContent(process, char)}
             <div className="randomchar__static">
                 <p className="randomchar__title">
                     Random character for today!
